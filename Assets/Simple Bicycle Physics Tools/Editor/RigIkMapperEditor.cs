@@ -6,6 +6,14 @@ namespace Rowlan.SimpleBicyclePhysics
 {
     /// <summary>
     /// Perform the mapping of a Character Creator 3 Character to the IK Rigs of Simple Bicycle Physics
+    /// 
+    /// Usage:
+    /// 
+    /// + drag the CC3 model on the bike root gameobject
+    /// + select the model in the hierarchy, then click menu Cyclist Setup > Setup Selected
+    /// + set x/z to 0/0 (don't change y)
+    /// + perform mapping
+    /// 
     /// </summary>
     [CustomEditor(typeof(RigIkMapper))]
     public class RigIkMapperEditor : Editor
@@ -32,6 +40,7 @@ namespace Rowlan.SimpleBicyclePhysics
                     if (GUILayout.Button("Map Character Creator 3"))
                     {
                         MapCharacterCreator3();
+                        
                     }
                 }
                 EditorGUILayout.EndHorizontal();
@@ -44,8 +53,8 @@ namespace Rowlan.SimpleBicyclePhysics
         private void MapCharacterCreator3()
         {
             GameObject bikePrefab = editorTarget.bikePrefabRoot;
-            GameObject cc3Model = editorTarget.cc3Model;
-            GameObject rig = editorTarget.rig;
+            GameObject cc3Model = bikePrefab.transform.GetComponentInChildren<ProceduralIKHandler>().gameObject;
+            GameObject rig = bikePrefab.transform.GetComponentInChildren<Rig>().gameObject;
 
             // HipIK
             AddMultiParentConstraint(bikePrefab, cc3Model, rig, "HipIK", "CC_Base_Hip", "HipIKTarget");
@@ -71,6 +80,8 @@ namespace Rowlan.SimpleBicyclePhysics
             // HeadIK
             AddMultiAimConstraint(bikePrefab, cc3Model, rig, "HeadIK", "CC_Base_Head", "HeadIKTarget");
 
+
+            Debug.Log("Bike rig mapping performed");
         }
 
         private void AddMultiParentConstraint(GameObject bikePrefab, GameObject cc3Model, GameObject rig, string ikName, string constrainedObjectName, string sourceObjectName)
